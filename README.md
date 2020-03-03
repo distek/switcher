@@ -106,7 +106,7 @@ Option 5 will allow you to add additional IPs to the "allowed" list.
 
 ---
 
-Flag's can also be used to get to where you want to go, faster:
+Flags can also be used to get to where you want to go, faster:
 
 ```
 Usage:
@@ -115,7 +115,8 @@ Usage:
     -h   --help           Print this help
     -p   --print          Print full server menu and exit
     -q   --quick          Use 'quick choice' server
-    -s n --server n       User server 'n'
+    -r   --rules          Specify whitelisted IPs(allowed to access the host)
+    -s n --server n       Use server 'n'
     -V   --version        Print version info
 ```
 
