@@ -219,7 +219,7 @@ Usage:
     -p   --print          Print full server menu and exit
     -q   --quick          Use 'quick choice' server
     -r   --rules          Specify whitelisted IPs(allowed to access the host)
-    -s n --server n       User server 'n'
+    -s n --server n       Use server 'n'
     -V   --version        Print version info
     "
 }
