@@ -6,7 +6,11 @@ scriptName="switcher"
 switcherOg=$(pwd)/switcher.sh
 switcherLoc=$(pwd)/switcher.sh.tmp
 
+scriptVersion="1.0.1"
+
 cp $switcherOg $switcherLoc
+
+rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
 
 sepLine() { 
 
@@ -220,7 +224,6 @@ Continuing
 
 special_rules() {
 
-    rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
 
     echo "
 Enter in any IP addresses you would like to have access to this box 

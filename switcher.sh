@@ -6,7 +6,9 @@ serverCount=$(cat $switcherCache/serverCount)
 scriptLoc=$(cat $switcherCache/.location)
 arg=$1
 
-scriptVersion="1.0.0"
+rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
+
+scriptVersion="1.0.1"
 
 if [[ $(id -u) != 0 ]]; then
     echo "Run as root."
@@ -129,10 +131,7 @@ Want to try again?
         if [[ $WHOOPS =~ [yY] ]]; then
             special_rules        
         fi
-    fi
-
-    # Basically, if n to the above quesiton
-    if [[ ${#accessIPs[@]} == 0 ]]; then
+    else
         continue
     fi
 
