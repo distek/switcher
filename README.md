@@ -135,3 +135,33 @@ The 'switch' script should be in `/usr/local/bin/`
 We might have to switch from UFW at some point, but for right now, it works just fine.
 
 Also, if you have a way to improve upon the script, submit a patch or PR!
+
+## Notes
+During the installation, there is now an option for "no pass":
+```
+Do you want to:
+
+	1) enter your password every time,
+	2) save it in an encrypted pass-file, or
+	3) skip this step as you already have the passwords stored in the
+	   NetworkManager vpn 'system-connections' files.
+	   Note: If you choose 3, and don't have a password in the
+	         aforementioned file(s), it will break this script.
+
+```
+Number 3 there.
+
+To do this en masse, edit the `pia-nm.sh` script like so:
+
+- In the "Ask Questions" section at about line 75:
+```
+echo -n "PIA password: "
+read pia_passwd
+
+```
+
+- Somewhere near line 190 in the `EOF` identifiers, after the `[ipv4]` section:
+```
+[vpn-secrets]
+password=$pia_passwd
+```

@@ -20,6 +20,11 @@ sepLine() {
 
 }
 
+cleanUp() {
+    rm $switcherLoc
+    rm '.name'
+}
+
 install_prep() {
 
     sepLine
@@ -46,7 +51,7 @@ enter.
     fi
     if [[ -f /usr/local/bin/$scriptName ]]; then
         echo -e "
-Something else is already using the 'switch' name.
+Something else is already using the name \"$scriptName\".
 Edit this script to change the name if you want, or get rid of whatever's using
 that name.
 
@@ -171,8 +176,9 @@ https://d.sb/2016/11/gpg-inappropriate-ioctl-for-device-errors
 
     PASS="|)0ngz"
     PASS_CONFIRM="|)0ngz"
-    touch $switcherCache/.gpgtrue
 
+    echo "2" > $switcherCache/askpass
+        
 }
 
 pass_choice() {
@@ -180,8 +186,12 @@ pass_choice() {
     sepLine
     echo -e "
 Do you want to:\n
-\t1) enter your password every time, or 
-\t2) save it in an encrypted pass-file?
+\t1) enter your password every time, 
+\t2) save it in an encrypted pass-file, or
+\t3) skip this step as you already have the passwords stored in the
+\t   NetworkManager vpn 'system-connections' files.
+\t   Note: If you choose 3, and don't have a password in the
+\t         aforementioned file(s), it will break this script.
 "
 
     read -p "Choice: " PASS_CHOICE
@@ -189,10 +199,18 @@ Do you want to:\n
     case $PASS_CHOICE in
         1) PASS="enter";;
         2) encrypt_secrets;;
+        3) PASS="saved";;
         *) echo "Try again"
            sleep 2
            pass_choice;;
     esac
+
+    if [[ $PASS == "saved" ]]; then
+        echo "0" > $switcherCache/askpass
+    else
+        echo "1" > $switcherCache/askpass
+    fi
+
 }
 
 vpn_uuid_list() {
@@ -335,19 +353,19 @@ if [ -f /usr/local/bin/$scriptName ]; then
     if [ -f $switcherCache/vpn-uuid-list ];then
         echo -e "Looks like we're good to go!
 Run '$scriptName' using sudo if not already root.\n\n"
-        rm $switcherLoc
+        cleanUp
         exit 0
     else
         echo "Missing the vpn-uuid-list!\nYou may have to generate this yourself."
         exit 4
-        rm $switcherLoc
+        cleanUp
     fi
 else
     echo -e "Something went wrong!
 Switcher was not installed correctly.
 Run this using 'bash -x install.sh' to see if any errors occur that weren't
 reported before."
-    rm $switcherLoc
+    cleanUp
     exit 5
 fi
 

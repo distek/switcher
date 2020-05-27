@@ -15,6 +15,8 @@ if [[ $(id -u) != 0 ]]; then
     exit 2
 fi
 
+ASKPASS=$(cat $switcherCache/askpass)
+
 sepLine() { 
 
     echo ""
@@ -157,11 +159,16 @@ quick(){
         echo "Currently connected to $VPN_DOWN"
         echo ""
         nmcli con down "$VPN_DOWN"
-        if [[ -f $switcherCache/.gpgtrue ]]; then
-            sshpass -v -P "Password: (vpn.secrets.password): " | sudo -E gpg -qd $switcherCache/vpn.secrets | nmcli con up $VPN_UUID --ask
-        else
+
+        if [[ $ASKPASS == "0" ]]; then
+            nmcli con up $VPN_UUID
+        elif [[ $ASKPASS == "1" ]]; then
             nmcli con up $VPN_UUID --ask
+        else
+            sshpass -v -P "Password: (vpn.secrets.password): " | sudo -E gpg -qd $switcherCache/vpn.secrets | nmcli con up $VPN_UUID --ask
+            
         fi
+
         sleep 1
         
         echo "Getting VPN IP from WTFISMYIP.COM"
@@ -200,7 +207,15 @@ main(){
     echo "Currently connected to $VPN_DOWN"
     echo ""
     nmcli con down "$VPN_DOWN"
-    sshpass -v -P "Password: (vpn.secrets.password): " | sudo -E gpg -qd $switcherCache/vpn.secrets | nmcli con up $VPN_UUID --ask
+
+    if [[ $ASKPASS == "0" ]]; then
+        nmcli con up $VPN_UUID
+    elif [[ $ASKPASS == "1" ]]; then
+        nmcli con up $VPN_UUID --ask
+    else
+        sshpass -v -P "Password: (vpn.secrets.password): " | sudo -E gpg -qd $switcherCache/vpn.secrets | nmcli con up $VPN_UUID --ask
+    fi
+
     sleep 1
     echo "Getting VPN IP from WTFISMYIP.COM"
     VPN_IP=$(curl -s https://wtfismyip.com/text)
